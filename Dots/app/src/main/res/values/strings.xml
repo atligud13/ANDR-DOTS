@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Dots</string>
-
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="main_screen_title">Dots</string>
+    <string name="main_screen_play">Play</string>
+    <string name="main_screen_options">Options</string>
 </resources>
