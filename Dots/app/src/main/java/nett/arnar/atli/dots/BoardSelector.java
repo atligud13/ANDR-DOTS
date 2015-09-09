@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.Button;
 
 public class BoardSelector extends AppCompatActivity {
-    public final static String GAME_MODE = "nett.arnar.atli.dots.GAMEMODE";
+    public final static String GAME_MODE = "nett.arnar.atli.dots.BoardSelector";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

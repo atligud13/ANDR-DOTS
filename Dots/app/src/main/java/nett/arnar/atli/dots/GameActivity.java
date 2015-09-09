@@ -1,10 +1,14 @@
 package nett.arnar.atli.dots;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class GameActivity extends AppCompatActivity {
@@ -12,12 +16,20 @@ public class GameActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_game);
 
         //Get the message from intent
         Intent intent = getIntent();
         int numCells = intent.getIntExtra(BoardSelector.GAME_MODE, 6);
 
-        setContentView(R.layout.activity_main);
+        // Creating the board view
+        BoardView boardView = new BoardView(this, numCells);
+        boardView.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT));
+
+        // Adding the board view the the parent layout
+        LinearLayout layout = (LinearLayout) findViewById(R.id.gameLayout);
+        layout.addView(boardView);
     }
 
     @Override
