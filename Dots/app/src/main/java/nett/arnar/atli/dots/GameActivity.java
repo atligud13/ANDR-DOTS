@@ -15,15 +15,9 @@ public class GameActivity extends AppCompatActivity {
 
         //Get the message from intent
         Intent intent = getIntent();
-        String gameMode = intent.getStringExtra(BoardSelector.GAME_MODE);
+        int numCells = intent.getIntExtra(BoardSelector.GAME_MODE, 6);
 
-        //Create the text view
-        TextView textView = new TextView(this);
-        textView.setText(gameMode);
-        textView.setTextSize(40);
-
-        //Set the text view as the activity layout
-        setContentView(textView);
+        setContentView(R.layout.activity_main);
     }
 
     @Override

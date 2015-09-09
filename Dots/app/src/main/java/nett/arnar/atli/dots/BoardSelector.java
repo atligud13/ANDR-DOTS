@@ -44,10 +44,10 @@ public class BoardSelector extends AppCompatActivity {
         Button buttonView = (Button) view;
         switch(buttonView.getId()) {
             case R.id.btnSixTiles :
-                intent.putExtra(GAME_MODE, "sixTiles");
+                intent.putExtra(GAME_MODE, 6);
                 break;
             case R.id.btnEightTiles :
-                intent.putExtra(GAME_MODE, "eightTiles");
+                intent.putExtra(GAME_MODE, 8);
                 break;
         }
         startActivity(intent);
