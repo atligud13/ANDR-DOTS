@@ -18,7 +18,7 @@
 
         <Button
             android:id="@+id/btnPlay"
-            android:onClick="onClick"
+            android:onClick="onPlayClick"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/main_screen_play"
@@ -26,7 +26,7 @@
 
         <Button
             android:id="@+id/btnOptions"
-            android:onClick="onClick"
+            android:onClick="onOptionsClick"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/main_screen_options"

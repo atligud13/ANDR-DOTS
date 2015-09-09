@@ -5,20 +5,31 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
+import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+public class GameActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+
+        //Get the message from intent
+        Intent intent = getIntent();
+        String gameMode = intent.getStringExtra(BoardSelector.GAME_MODE);
+
+        //Create the text view
+        TextView textView = new TextView(this);
+        textView.setText(gameMode);
+        textView.setTextSize(40);
+
+        //Set the text view as the activity layout
+        setContentView(textView);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_game, menu);
         return true;
     }
 
@@ -35,14 +46,5 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    public void onPlayClick(View view) {
-        Intent intent = new Intent(this, BoardSelector.class);
-        startActivity(intent);
-    }
-
-    public void onOptionsClick(View view) {
-
     }
 }

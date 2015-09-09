@@ -4,4 +4,11 @@
     <string name="main_screen_title">Dots</string>
     <string name="main_screen_play">Play</string>
     <string name="main_screen_options">Options</string>
+    <string name="title_activity_board_selector">BoardSelector</string>
+    <string name="board_selector_title">Choose your game nerd</string>
+    <string name="board_selector_six">6x6</string>
+    <string name="board_selector_eight">8x8</string>
+    <string name="title_activity_game">GameActivity</string>
+
+    <string name="hello_world">Hello world!</string>
 </resources>
