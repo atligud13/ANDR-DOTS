@@ -22,6 +22,7 @@ import nett.arnar.atli.dots.Shapes.Circle;
 public class BoardView extends View {
     private int m_cellWidth;
     private int m_cellHeight;
+    private int m_circleMargin;
     private int numCells;
     private Rect m_rect = new Rect();
     private RectF m_circle = new RectF();
@@ -49,18 +50,30 @@ public class BoardView extends View {
     }
 
     @Override
-    public void onDraw(Canvas canvas) {
-        m_cellWidth = getMeasuredWidth() / numCells;
-        m_cellHeight = getMeasuredHeight() / numCells;
-        int circle_margin = getMeasuredWidth() / (numCells + 1);
+    protected void onMeasure( int widthMeasureSpec, int heightMeasureSpec ) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        int width  = getMeasuredWidth() - getPaddingLeft() - getPaddingRight();
+        int height = getMeasuredHeight() - getPaddingTop() - getPaddingBottom();
+        int size = Math.min(width, height);
+        setMeasuredDimension(size + getPaddingLeft() + getPaddingRight(),
+                size + getPaddingTop() + getPaddingBottom());
+    }
 
+    @Override
+    protected void onSizeChanged( int xNew, int yNew, int xOld, int yOld ) {
+        int boardWidth = (xNew - getPaddingLeft() - getPaddingRight());
+        m_circleMargin = boardWidth / (numCells + 1);
+    }
+
+    @Override
+    public void onDraw(Canvas canvas) {
         m_rect.set(0, 0, getMeasuredWidth(), getMeasuredHeight());
         canvas.drawRect(m_rect, m_paintCell);
 
         for (int i = 0; i < numCells; ++i) {
-            int x = circle_margin + (i * circle_margin) - getPaddingLeft();
+            int x = m_circleMargin + (i * m_circleMargin);
             for (int j = 0; j < numCells; ++j) {
-                int y = circle_margin + (j * circle_margin) - getPaddingTop();
+                int y = m_circleMargin + (j * m_circleMargin);
                 circles[i][j].draw(canvas, m_paintCircle, x, y);
             }
         }
