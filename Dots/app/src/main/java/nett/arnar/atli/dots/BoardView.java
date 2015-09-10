@@ -14,6 +14,8 @@ import android.view.View;
 import java.util.ArrayList;
 import java.util.List;
 
+import nett.arnar.atli.dots.Shapes.Circle;
+
 /**
  * Created by Atli Guðlaugsson on 9/9/2015.
  */
@@ -29,9 +31,11 @@ public class BoardView extends View {
     private Paint m_paintPath = new Paint();
     private boolean m_moving = false;
     private List<Point> m_cellPath = new ArrayList<Point>();
+    private Circle[][] circles;
 
-    public BoardView(Context context, int numCells) {
+    public BoardView(Context context, int numCells, Circle[][] circles) {
         super(context);
+        this.circles = circles;
         this.numCells = numCells;
 
         // Setting default values
@@ -39,11 +43,35 @@ public class BoardView extends View {
         m_paintCell.setStyle(Paint.Style.STROKE);
         m_paintCell.setStrokeWidth(2);
         m_paintCell.setAntiAlias(true);
+
+        m_paintCircle.setStyle(Paint.Style.FILL_AND_STROKE);
+        m_paintCircle.setAntiAlias(true);
+    }
+
+    @Override
+    protected void onMeasure( int widthMeasureSpec, int heightMeasureSpec ) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        int width  = getMeasuredWidth() - getPaddingLeft() - getPaddingRight();
+        int height = getMeasuredHeight() - getPaddingTop() - getPaddingBottom();
+        int size = Math.min(width, height);
+        setMeasuredDimension(size + getPaddingLeft() + getPaddingRight(),
+                size + getPaddingTop() + getPaddingBottom());
     }
 
     @Override
     public void onDraw(Canvas canvas) {
-        m_rect.set(0, 0, 100, 100);
+        m_cellWidth = getMeasuredWidth() / numCells;
+        m_cellHeight = getMeasuredHeight() / numCells;
+
+        m_rect.set(0, 0, getMeasuredWidth(), getMeasuredHeight());
         canvas.drawRect(m_rect, m_paintCell);
+
+        for (int i = 0; i < numCells; ++i) {
+            int x = (m_cellHeight / 3) + (i * m_cellHeight);
+            for (int j = 0; j < numCells; ++j) {
+                int y = (m_cellWidth / 3) + (j * m_cellWidth);
+                circles[i][j].draw(canvas, m_paintCircle, x, y);
+            }
+        }
     }
 }

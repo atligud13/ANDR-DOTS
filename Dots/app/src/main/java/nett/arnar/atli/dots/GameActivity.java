@@ -2,6 +2,7 @@ package nett.arnar.atli.dots;
 
 import android.app.ActionBar;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -11,7 +12,12 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import nett.arnar.atli.dots.Shapes.Circle;
+
 public class GameActivity extends AppCompatActivity {
+
+    BoardView boardView;
+    Circle[][] circles;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,8 +28,11 @@ public class GameActivity extends AppCompatActivity {
         Intent intent = getIntent();
         int numCells = intent.getIntExtra(BoardSelector.GAME_MODE, 6);
 
+        circles = new Circle[numCells][numCells];
+        initCircles(numCells);
+
         // Creating the board view
-        BoardView boardView = new BoardView(this, numCells);
+        boardView = new BoardView(this, numCells, circles);
         boardView.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
 
@@ -32,25 +41,11 @@ public class GameActivity extends AppCompatActivity {
         layout.addView(boardView);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_game, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+    private void initCircles(int cells) {
+        for (int i = 0; i < cells; ++i) {
+            for (int j = 0; j < cells; ++j) {
+                circles[i][j] = new Circle(Color.RED, 30);
+            }
         }
-
-        return super.onOptionsItemSelected(item);
     }
 }
