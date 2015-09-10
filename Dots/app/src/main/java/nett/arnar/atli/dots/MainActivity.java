@@ -45,4 +45,9 @@ public class MainActivity extends AppCompatActivity {
     public void onOptionsClick(View view) {
 
     }
+
+    public void onHighScoresClick(View view) {
+        Intent intent = new Intent(this, HighScoresActivity.class);
+        startActivity(intent);
+    }
 }

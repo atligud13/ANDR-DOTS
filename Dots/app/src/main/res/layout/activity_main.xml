@@ -32,5 +32,13 @@
             android:text="@string/main_screen_options"
             android:layout_marginTop="30dp" />
 
+        <Button
+            android:id="@+id/btnHighScores"
+            android:onClick="onHighScoresClick"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/main_screen_high_scores"
+            android:layout_marginTop="30dp" />
+
 
 </LinearLayout>
