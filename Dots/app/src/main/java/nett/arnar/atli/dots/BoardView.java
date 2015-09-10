@@ -49,27 +49,18 @@ public class BoardView extends View {
     }
 
     @Override
-    protected void onMeasure( int widthMeasureSpec, int heightMeasureSpec ) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        int width  = getMeasuredWidth() - getPaddingLeft() - getPaddingRight();
-        int height = getMeasuredHeight() - getPaddingTop() - getPaddingBottom();
-        int size = Math.min(width, height);
-        setMeasuredDimension(size + getPaddingLeft() + getPaddingRight(),
-                size + getPaddingTop() + getPaddingBottom());
-    }
-
-    @Override
     public void onDraw(Canvas canvas) {
         m_cellWidth = getMeasuredWidth() / numCells;
         m_cellHeight = getMeasuredHeight() / numCells;
+        int circle_margin = getMeasuredWidth() / (numCells + 1);
 
         m_rect.set(0, 0, getMeasuredWidth(), getMeasuredHeight());
         canvas.drawRect(m_rect, m_paintCell);
 
         for (int i = 0; i < numCells; ++i) {
-            int x = (m_cellHeight / 3) + (i * m_cellHeight);
+            int x = circle_margin + (i * circle_margin) - getPaddingLeft();
             for (int j = 0; j < numCells; ++j) {
-                int y = (m_cellWidth / 3) + (j * m_cellWidth);
+                int y = circle_margin + (j * circle_margin) - getPaddingTop();
                 circles[i][j].draw(canvas, m_paintCircle, x, y);
             }
         }

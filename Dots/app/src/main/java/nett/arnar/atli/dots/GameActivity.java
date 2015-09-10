@@ -12,17 +12,22 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.Random;
+
 import nett.arnar.atli.dots.Shapes.Circle;
 
 public class GameActivity extends AppCompatActivity {
 
     BoardView boardView;
     Circle[][] circles;
+    int[] color_pool = new int[] {Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW, Color.CYAN};
+    Random rand = new Random();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+
 
         //Get the message from intent
         Intent intent = getIntent();
@@ -33,8 +38,8 @@ public class GameActivity extends AppCompatActivity {
 
         // Creating the board view
         boardView = new BoardView(this, numCells, circles);
-        boardView.setLayoutParams(new ActionBar.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT));
+        boardView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
 
         // Adding the board view the the parent layout
         LinearLayout layout = (LinearLayout) findViewById(R.id.gameLayout);
@@ -44,7 +49,7 @@ public class GameActivity extends AppCompatActivity {
     private void initCircles(int cells) {
         for (int i = 0; i < cells; ++i) {
             for (int j = 0; j < cells; ++j) {
-                circles[i][j] = new Circle(Color.RED, 30);
+                circles[i][j] = new Circle(color_pool[rand.nextInt(4)], 15);
             }
         }
     }
