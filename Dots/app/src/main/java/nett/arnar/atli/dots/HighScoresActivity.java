@@ -20,18 +20,20 @@ import java.util.ArrayList;
 
 public class HighScoresActivity extends AppCompatActivity {
     ArrayList<HighScore> highScores = new ArrayList<HighScore>();
-
+    private ListView list;
+    private ScoreAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_high_scores);
-        LinearLayout layout = (LinearLayout) findViewById(R.id.scoreLayout);
 
         highScores.add(new HighScore("Atli", "9999999"));
-        highScores.add(new HighScore("asdf", "23"));
+        highScores.add(new HighScore("Arnar", "1"));
 
-        drawHighScoreList(this);
+        list = (ListView) findViewById(R.id.scoreTable);
+        adapter = new ScoreAdapter(this, highScores);
+        list.setAdapter(adapter);
     }
 
     @Override
@@ -56,7 +58,9 @@ public class HighScoresActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /*
     public void drawHighScoreList(Context context) {
+        // Fetching the list view and initiating the adapter
         ListView list = (ListView) findViewById(R.id.scoreTable);
         ArrayAdapter<View> arrayAdapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1);
         list.setAdapter(arrayAdapter);
@@ -64,16 +68,19 @@ public class HighScoresActivity extends AppCompatActivity {
         for(int i = 0; i < highScores.size(); i++) {
             HighScore entry = highScores.get(i);
 
+            // Creating a view from the xml template
             View view = LayoutInflater.from(context).inflate(R.layout.high_score_list_row, null);
 
+            // Populating the name and score of the template
             TextView name = (TextView) view.findViewById(R.id.name);
             name.setText(entry.name);
 
             TextView score = (TextView) view.findViewById(R.id.score);
             score.setText(entry.score);
 
+            // Adding the template to the list view
             arrayAdapter.add(view);
         }
 
-    }
+    } */
 }
