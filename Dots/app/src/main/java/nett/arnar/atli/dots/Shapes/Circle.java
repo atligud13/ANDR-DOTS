@@ -24,4 +24,20 @@ public class Circle {
         paint.setColor(color);
         canvas.drawOval(circle, paint);
     }
+
+    public RectF getCircle() {
+        return circle;
+    }
+
+    public float getX() {
+        return circle.left + ((circle.right - circle.left) / 2);
+    }
+
+    public float getY() {
+        return circle.top + ((circle.bottom - circle.top) / 2);
+    }
+
+    public int getColor() {
+        return color;
+    }
 }

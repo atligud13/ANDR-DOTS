@@ -9,6 +9,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ public class BoardView extends View {
     private Paint m_paintPath = new Paint();
     private boolean m_moving = false;
     private List<Point> m_cellPath = new ArrayList<Point>();
+    private Point m_currentPoint;
     private Circle[][] circles;
 
     public BoardView(Context context, int numCells, Circle[][] circles) {
@@ -47,6 +49,10 @@ public class BoardView extends View {
 
         m_paintCircle.setStyle(Paint.Style.FILL_AND_STROKE);
         m_paintCircle.setAntiAlias(true);
+
+        m_paintPath.setStrokeWidth(10);
+        m_paintPath.setStyle(Paint.Style.STROKE);
+        m_paintPath.setAntiAlias(true);
     }
 
     @Override
@@ -77,5 +83,71 @@ public class BoardView extends View {
                 circles[i][j].draw(canvas, m_paintCircle, x, y);
             }
         }
+
+        if (!m_cellPath.isEmpty()) {
+            m_path.reset();
+            Point point = m_cellPath.get(0);
+            m_path.moveTo(point.x, point.y);
+            for(int i = 1; i < m_cellPath.size(); i++) {
+                point = m_cellPath.get(i);
+                m_path.lineTo(point.x, point.y);
+            }
+            //m_path.lineTo(m_currentPoint.x, m_currentPoint.y);
+            canvas.drawPath(m_path, m_paintPath);
+        }
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        int x = (int) event.getX();
+        int y = (int) event.getY();
+
+        Circle overlapping = getOverlappingCircle(x, y);
+
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            if (overlapping != null) {
+                m_paintPath.setColor(overlapping.getColor());
+                m_cellPath.add(new Point((int) overlapping.getX(), (int) overlapping.getY()));
+                m_currentPoint = new Point(x, y);
+            }
+        }
+        else if (event.getAction() == MotionEvent.ACTION_MOVE) {
+            if (overlapping != null && overlapping.getColor() == m_paintPath.getColor()) {
+                m_cellPath.add(new Point((int)overlapping.getX(), (int)overlapping.getY()));
+                m_currentPoint.set(x, y);
+                invalidate();
+            }
+        }
+        else if (event.getAction() == MotionEvent.ACTION_UP) {
+            m_cellPath.clear();
+            m_currentPoint = null;
+            invalidate();
+        }
+
+        return true;
+    }
+
+    private Circle getOverlappingCircle(int x, int y) {
+        int col = -1, row = 0;
+
+        for (int i = 0; i < numCells; ++i) {
+            Circle c = circles[i][row];
+            if (c.getCircle().contains(x, c.getY())) {
+                col = i;
+                break;
+            }
+        }
+
+        if (col == -1) return null;
+
+        for (int i = 0; i < numCells; ++i) {
+            Circle c = circles[col][i];
+            if (c.getCircle().contains(x, y)) {
+                row = i;
+                break;
+            }
+        }
+
+        return circles[col][row];
     }
 }
