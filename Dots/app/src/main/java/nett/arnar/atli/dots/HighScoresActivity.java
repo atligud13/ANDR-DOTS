@@ -1,20 +1,10 @@
 package nett.arnar.atli.dots;
 
-import android.app.ActionBar;
-import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -28,9 +18,11 @@ public class HighScoresActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_high_scores);
 
+        // Mock data while implementing.
         highScores.add(new HighScore("Atli", "9999999"));
         highScores.add(new HighScore("Arnar", "1"));
 
+        // Finding the list and filling it with the score data
         list = (ListView) findViewById(R.id.scoreTable);
         adapter = new ScoreAdapter(this, highScores);
         list.setAdapter(adapter);
@@ -57,30 +49,4 @@ public class HighScoresActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
-    /*
-    public void drawHighScoreList(Context context) {
-        // Fetching the list view and initiating the adapter
-        ListView list = (ListView) findViewById(R.id.scoreTable);
-        ArrayAdapter<View> arrayAdapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1);
-        list.setAdapter(arrayAdapter);
-
-        for(int i = 0; i < highScores.size(); i++) {
-            HighScore entry = highScores.get(i);
-
-            // Creating a view from the xml template
-            View view = LayoutInflater.from(context).inflate(R.layout.high_score_list_row, null);
-
-            // Populating the name and score of the template
-            TextView name = (TextView) view.findViewById(R.id.name);
-            name.setText(entry.name);
-
-            TextView score = (TextView) view.findViewById(R.id.score);
-            score.setText(entry.score);
-
-            // Adding the template to the list view
-            arrayAdapter.add(view);
-        }
-
-    } */
 }

@@ -1,11 +1,9 @@
 package nett.arnar.atli.dots;
 import android.content.Context;
-import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -27,13 +25,14 @@ public class ScoreAdapter extends ArrayAdapter<HighScore> {
     @Override
     public View getView( int position, View convertView, ViewGroup parent ) {
 
-        LayoutInflater inflater =
-                (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(R.layout.high_score_list_row, parent,false);
 
+        // Setting the name of the player
         TextView nameView = (TextView) rowView.findViewById(R.id.name);
         nameView.setText( values.get(position).name );
 
+        // Setting the score of the player
         TextView scoreView = (TextView) rowView.findViewById(R.id.score);
         scoreView.setText(values.get(position).score);
 
