@@ -62,6 +62,7 @@ public class HighScoresActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    // Creates a directory with two files, names and scores
     public void createInternalStorageFiles() {
         File scores = new File(this.getFilesDir(), "scores");
         scores.mkdir();
@@ -74,6 +75,7 @@ public class HighScoresActivity extends AppCompatActivity {
         BufferedReader scoreReader = new BufferedReader( new FileReader(this.getFilesDir() + "/scores/" + SCORES));
         String         name, score;
 
+        // Constructing the list
         while( ( name = nameReader.readLine() ) != null ) {
             if( (score = scoreReader.readLine() ) != null) {
                 highScores.add(new HighScore(name, score));

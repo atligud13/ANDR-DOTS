@@ -15,6 +15,8 @@ public class HighScore implements Comparable {
     @Override
     public int compareTo(Object o) {
         HighScore h = (HighScore) o;
-        return this.score.compareTo(h.score);
+        // String comparator on integers, whatever
+        if(this.score.compareTo(h.score) == 1) return 0;
+        return 1;
     }
 }

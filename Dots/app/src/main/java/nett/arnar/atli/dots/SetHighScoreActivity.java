@@ -72,6 +72,7 @@ public class SetHighScoreActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    // Creates a directory with two files, names and scores
     public void createInternalStorageFiles() {
         File scores = new File(this.getFilesDir(), "scores");
         scores.mkdir();
@@ -79,12 +80,15 @@ public class SetHighScoreActivity extends AppCompatActivity {
         File scores_file = new File(this.getFilesDir() + "/scores/", SCORES);
     }
 
+    // Saves the score to the internal storage
     public void saveScore(String name, String score) throws IOException{
         FileOutputStream nFos = new FileOutputStream(this.getFilesDir() +  "/scores/names_file", true);
         FileOutputStream sFos = new FileOutputStream(this.getFilesDir() +  "/scores/scores_file", true);
 
         nFos.write(name.getBytes());
+        nFos.write(System.getProperty("line.separator").getBytes());
         sFos.write(score.getBytes());
+        sFos.write(System.getProperty("line.separator").getBytes());
         nFos.close();
         sFos.close();
     }
