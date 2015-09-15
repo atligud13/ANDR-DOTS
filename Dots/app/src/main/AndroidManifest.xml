@@ -31,6 +31,10 @@
             android:name=".HighScoresActivity"
             android:label="@string/title_activity_high_scores" >
         </activity>
+        <activity
+            android:name=".SetHighScoreActivity"
+            android:label="@string/title_activity_set_high_score" >
+        </activity>
     </application>
 
 </manifest>

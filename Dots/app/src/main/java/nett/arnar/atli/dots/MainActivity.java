@@ -50,4 +50,10 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, HighScoresActivity.class);
         startActivity(intent);
     }
+
+    public void onSetHighScoreClick(View view) {
+        Intent intent = new Intent(this, SetHighScoreActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        startActivity(intent);
+    }
 }
