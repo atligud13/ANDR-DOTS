@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <CheckBoxPreference
+    android:title="Vibrate on touch"
+    android:summary="Vibrate when you touch a button brah"
+    android:key="vibrate"
+    android:defaultValue="false" />
+    <CheckBoxPreference
+        android:title="Enable sound"
+        android:summary="Sounds when you connect the dots bruh"
+        android:key="sound"
+        android:defaultValue="false" />
+    <Preference
+        android:title="Reset high score list"
+        android:summary="Gone forever"
+        android:key="resetScoreList"
+        android:defaultValue="false"
+        android:onClick="resetScoreList" />
+</PreferenceScreen>

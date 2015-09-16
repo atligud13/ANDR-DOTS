@@ -2,6 +2,7 @@ package nett.arnar.atli.dots;
 
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.preference.Preference;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
