@@ -143,7 +143,7 @@ public class BoardView extends View {
                 m_moves--;
                 m_score += m_cellPath.size();
                 listener.onMove(m_score, m_moves);
-                if (m_moves < 1) listener.onGameOver();
+                if (m_moves < 1) listener.onGameOver(m_score);
             }
             m_cellPath.clear();
             invalidate();
@@ -233,7 +233,7 @@ public class BoardView extends View {
     }
 
     public interface GameListener {
-        public void onGameOver();
+        public void onGameOver(int score);
         public void onMove(int score, int moves);
     }
 }

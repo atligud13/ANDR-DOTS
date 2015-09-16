@@ -41,6 +41,7 @@ public class BoardSelector extends AppCompatActivity {
 
     public void onClick(View view) {
         Intent intent = new Intent(this, GameActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         Button buttonView = (Button) view;
         switch(buttonView.getId()) {
             case R.id.btnSixTiles :

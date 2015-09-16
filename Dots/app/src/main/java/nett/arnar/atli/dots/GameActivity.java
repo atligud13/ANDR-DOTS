@@ -21,6 +21,7 @@ import nett.arnar.atli.dots.Shapes.Circle;
 import nett.arnar.atli.dots.BoardView.GameListener;
 
 public class GameActivity extends AppCompatActivity {
+    public String SCORE = "nett.arnar.atli.dots.GameActivity";
     private BoardView boardView;
     private TextView tv_score;
     private TextView tv_moves;
@@ -30,8 +31,11 @@ public class GameActivity extends AppCompatActivity {
 
     private GameListener gameListener = new GameListener() {
         @Override
-        public void onGameOver() {
-
+        public void onGameOver(int score) {
+            Intent intent = new Intent(GameActivity.this, SetHighScoreActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            intent.putExtra(SCORE, score);
+            startActivity(intent);
         }
 
         @Override
