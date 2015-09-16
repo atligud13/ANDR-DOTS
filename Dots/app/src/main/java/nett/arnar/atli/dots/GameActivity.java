@@ -15,27 +15,40 @@ import android.widget.TextView;
 import java.util.Random;
 
 import nett.arnar.atli.dots.Shapes.Circle;
+import nett.arnar.atli.dots.BoardView.GameListener;
 
 public class GameActivity extends AppCompatActivity {
     private BoardView boardView;
+    private TextView tv_score;
+    private TextView tv_moves;
+
+    private GameListener gameListener = new GameListener() {
+        @Override
+        public void onGameOver() {
+
+        }
+
+        @Override
+        public void onMove(int score, int moves) {
+            tv_score.setText(String.valueOf(score));
+            tv_moves.setText(String.valueOf(moves));
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
+        tv_score = (TextView) findViewById(R.id.tv_score);
+        tv_moves = (TextView) findViewById(R.id.tv_moves);
 
         //Get the message from intent
         Intent intent = getIntent();
         int numCells = intent.getIntExtra(BoardSelector.GAME_MODE, 6);
 
-        // Creating the board view
-        boardView = new BoardView(this, numCells);
-        boardView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT));
-
-        // Adding the board view the the parent layout
-        LinearLayout layout = (LinearLayout) findViewById(R.id.gameLayout);
-        layout.addView(boardView);
+        boardView = (BoardView) findViewById(R.id.v_bv);
+        boardView.setNumCells(numCells);
+        boardView.setGameListener(gameListener);
     }
 }

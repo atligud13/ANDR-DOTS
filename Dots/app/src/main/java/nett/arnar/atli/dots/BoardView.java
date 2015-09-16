@@ -23,24 +23,21 @@ import nett.arnar.atli.dots.Shapes.Circle;
  */
 public class BoardView extends View {
     private int m_circleGap;
-
     private int numCells;
-    private Rect m_rect = new Rect();
-    private RectF m_circle = new RectF();
     private Path m_path = new Path();
     private Paint m_paintCell = new Paint();
     private Paint m_paintCircle = new Paint();
     private Paint m_paintPath = new Paint();
-    private boolean m_moving = false;
     private List<Point> m_cellPath = new ArrayList<Point>();
     private Point m_currentPoint;
+    private int m_score = 0;
+    private int m_moves = 30;
     private Circle[][] circles;
+    private GameListener listener;
 
-    public BoardView(Context context, int cells) {
-        super(context);
-        numCells = cells;
-
-        setPadding(100, 100, 100, 100);
+    public BoardView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        numCells = 6;
 
         m_currentPoint = new Point(0, 0);
 
@@ -58,10 +55,20 @@ public class BoardView extends View {
         m_paintPath.setAntiAlias(true);
     }
 
+    public void setGameListener(GameListener l) {
+        listener = l;
+        listener.onMove(m_score, m_moves);
+    }
+
+    public void setNumCells(int cells) {
+        numCells = cells;
+    }
+
     @Override
-    protected void onLayout (boolean changed, int left, int top, int right, int bottom) {
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-        initCircles();
+        // Only initialize one time
+        if (circles == null) initCircles();
     }
 
     @Override
@@ -82,8 +89,6 @@ public class BoardView extends View {
 
     @Override
     public void onDraw(Canvas canvas) {
-        m_rect.set(0, 0, getWidth(), getHeight());
-        canvas.drawRect(m_rect, m_paintCell);
 
         for (int i = 0; i < numCells; ++i) {
             int x = colToX(i);
@@ -135,6 +140,10 @@ public class BoardView extends View {
         else if (event.getAction() == MotionEvent.ACTION_UP) {
             if (m_cellPath.size() > 1) {
                 removeCircles();
+                m_moves--;
+                m_score += m_cellPath.size();
+                listener.onMove(m_score, m_moves);
+                if (m_moves < 1) listener.onGameOver();
             }
             m_cellPath.clear();
             invalidate();
@@ -146,12 +155,22 @@ public class BoardView extends View {
     private void addToPath(Circle c) {
         Point point = new Point(xToCol((int)c.getX()), yToRow((int)c.getY()));
 
-        // TODO: check if adjacent
+        // Check if it's the first point
+        if (!m_cellPath.isEmpty()) {
+            Point lastP = m_cellPath.get(m_cellPath.size() - 1);
 
-        for (Point p : m_cellPath) {
-            if (p.x == point.x && p.y == point.y) {
-                // Point is already in the path
+            // Check if point is adjacent
+            if (!(lastP.x - 1 == point.x && lastP.y == point.y || // Left of
+                  lastP.x + 1 == point.x && lastP.y == point.y || // Right of
+                  lastP.y - 1 == point.y && lastP.x == point.x || // Above
+                  lastP.y + 1 == point.y && lastP.x == point.x))  // Below
                 return;
+
+            for (Point p : m_cellPath) {
+                if (p.x == point.x && p.y == point.y) {
+                    // Point is already in the path
+                    return;
+                }
             }
         }
 
@@ -172,25 +191,15 @@ public class BoardView extends View {
     }
 
     private Circle getOverlappingCircle(int x, int y) {
-        int col = -1;
+        int col = xToCol(x);
+        int row = yToRow(y);
 
-        for (int i = 0; i < numCells; ++i) {
-            Circle c = circles[i][0];
-            if (c.getCircle().contains(x, c.getY())) {
-                col = i;
-                break;
-            }
+        // Make sure col and row is within range
+        if (col < numCells && row < numCells && col >= 0 && row >= 0) {
+            Circle c = circles[col][row];
+
+            if (c.getCircle().contains(x, y)) return c;
         }
-
-        if (col == -1) return null;
-
-        for (int i = 0; i < numCells; ++i) {
-            Circle c = circles[col][i];
-            if (c.getCircle().contains(x, y)) {
-                return c;
-            }
-        }
-
         return null;
     }
 
@@ -198,7 +207,7 @@ public class BoardView extends View {
         Random rand = new Random();
         int radius = getMeasuredWidth() / (numCells * 4);
         for (Point p : m_cellPath) {
-            circles[p.x][p.y] = new Circle(COLOR_POOL[rand.nextInt(4)], radius);
+            circles[p.x][p.y] = new Circle(COLOR_POOL[rand.nextInt(5)], radius);
         }
     }
 
@@ -218,8 +227,13 @@ public class BoardView extends View {
         int radius = getMeasuredWidth() / (numCells * 4);
         for (int i = 0; i < numCells; ++i) {
             for (int j = 0; j < numCells; ++j) {
-                circles[i][j] = new Circle(COLOR_POOL[rand.nextInt(4)], radius);
+                circles[i][j] = new Circle(COLOR_POOL[rand.nextInt(5)], radius);
             }
         }
+    }
+
+    public interface GameListener {
+        public void onGameOver();
+        public void onMove(int score, int moves);
     }
 }
