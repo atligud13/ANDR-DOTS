@@ -2,7 +2,10 @@ package nett.arnar.atli.dots;
 
 import android.app.ActionBar;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Vibrator;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -21,6 +24,9 @@ public class GameActivity extends AppCompatActivity {
     private BoardView boardView;
     private TextView tv_score;
     private TextView tv_moves;
+    private Vibrator m_vibrator;
+    private SharedPreferences m_sp;
+    private boolean m_useVibrator;
 
     private GameListener gameListener = new GameListener() {
         @Override
@@ -32,6 +38,9 @@ public class GameActivity extends AppCompatActivity {
         public void onMove(int score, int moves) {
             tv_score.setText(String.valueOf(score));
             tv_moves.setText(String.valueOf(moves));
+            if (m_useVibrator) {
+                m_vibrator.vibrate(500);
+            }
         }
     };
 
@@ -50,5 +59,9 @@ public class GameActivity extends AppCompatActivity {
         boardView = (BoardView) findViewById(R.id.v_bv);
         boardView.setNumCells(numCells);
         boardView.setGameListener(gameListener);
+
+        m_vibrator = (Vibrator) getApplicationContext().getSystemService(VIBRATOR_SERVICE);
+        m_sp = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        m_useVibrator = m_sp.getBoolean("vibrate", false);
     }
 }
