@@ -17,11 +17,7 @@ import java.util.Random;
 import nett.arnar.atli.dots.Shapes.Circle;
 
 public class GameActivity extends AppCompatActivity {
-
-    BoardView boardView;
-    Circle[][] circles;
-    int[] color_pool = new int[] {Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW, Color.CYAN};
-    Random rand = new Random();
+    private BoardView boardView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,24 +29,13 @@ public class GameActivity extends AppCompatActivity {
         Intent intent = getIntent();
         int numCells = intent.getIntExtra(BoardSelector.GAME_MODE, 6);
 
-        circles = new Circle[numCells][numCells];
-        initCircles(numCells);
-
         // Creating the board view
-        boardView = new BoardView(this, numCells, circles);
+        boardView = new BoardView(this, numCells);
         boardView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
 
         // Adding the board view the the parent layout
         LinearLayout layout = (LinearLayout) findViewById(R.id.gameLayout);
         layout.addView(boardView);
-    }
-
-    private void initCircles(int cells) {
-        for (int i = 0; i < cells; ++i) {
-            for (int j = 0; j < cells; ++j) {
-                circles[i][j] = new Circle(color_pool[rand.nextInt(4)], 15);
-            }
-        }
     }
 }

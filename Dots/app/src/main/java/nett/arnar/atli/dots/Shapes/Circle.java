@@ -20,7 +20,7 @@ public class Circle {
     }
 
     public void draw(Canvas canvas, Paint paint, int x, int y) {
-        circle.set(x - radius, y - radius, x + 2*radius, y + 2*radius);
+        circle.set(x - radius, y - radius, x + radius, y + radius);
         paint.setColor(color);
         canvas.drawOval(circle, paint);
     }
