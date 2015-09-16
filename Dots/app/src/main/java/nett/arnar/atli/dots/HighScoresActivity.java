@@ -17,10 +17,16 @@ import java.util.Collections;
 
 public class HighScoresActivity extends AppCompatActivity {
     ArrayList<HighScore> highScores = new ArrayList<>();
+    ArrayList<HighScore> highScoresEight = new ArrayList<>();
     private ListView list;
+    private ListView listEight;
     private ScoreAdapter adapter;
-    private final String NAMES = "names_file";
-    private final String SCORES = "scores_file";
+    private ScoreAdapter adapterEight;
+    private final String SIX_NAMES = "names_file";
+    private final String SIX_SCORES = "scores_file";
+    private final String EIGHT_NAMES = "names_eight_file";
+    private final String EIGHT_SCORES = "scores_eight_file";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,8 +34,18 @@ public class HighScoresActivity extends AppCompatActivity {
         setContentView(R.layout.activity_high_scores);
 
         // Setting the input streams to the files
+        // Doing this in each separate try/catch because
+        // if either one is empty, an exception will be thrown
+        // and the other one won't be printed out.
         try {
-            populateHighScoresList();
+            populateSixHighScoresList();
+        }
+        catch(IOException e) {
+            createInternalStorageFiles();
+        }
+
+        try {
+            populateEightHighScoresList();
         }
         catch(IOException e) {
             createInternalStorageFiles();
@@ -37,8 +53,11 @@ public class HighScoresActivity extends AppCompatActivity {
 
         // Finding the list and filling it with the score data
         list = (ListView) findViewById(R.id.scoreTable);
+        listEight = (ListView) findViewById(R.id.scoreTableEight);
         adapter = new ScoreAdapter(this, highScores);
+        adapterEight = new ScoreAdapter(this, highScoresEight);
         list.setAdapter(adapter);
+        listEight.setAdapter(adapterEight);
     }
 
     @Override
@@ -67,23 +86,39 @@ public class HighScoresActivity extends AppCompatActivity {
     public void createInternalStorageFiles() {
         File scores = new File(this.getFilesDir(), "scores");
         scores.mkdir();
-        File names_file = new File(this.getFilesDir() + "/scores/", NAMES);
-        File scores_file = new File(this.getFilesDir() + "/scores/", SCORES);
+        File names_file = new File(this.getFilesDir() + "/scores/", SIX_NAMES);
+        File scores_file = new File(this.getFilesDir() + "/scores/", SIX_SCORES);
+        File names_eight_file = new File(this.getFilesDir() + "/scores/", EIGHT_NAMES);
+        File scores_eight_file = new File(this.getFilesDir() + "/scores/", EIGHT_SCORES);
     }
 
-    public void populateHighScoresList() throws IOException{
-        BufferedReader nameReader = new BufferedReader( new FileReader(this.getFilesDir() + "/scores/" + NAMES) );
-        BufferedReader scoreReader = new BufferedReader( new FileReader(this.getFilesDir() + "/scores/" + SCORES));
+    public void populateSixHighScoresList() throws IOException {
+        BufferedReader nameReader = new BufferedReader( new FileReader(this.getFilesDir() + "/scores/" + SIX_NAMES) );
+        BufferedReader scoreReader = new BufferedReader( new FileReader(this.getFilesDir() + "/scores/" + SIX_SCORES));
         String         name, score;
 
-        // Constructing the list
+        // Constructing the lists
         while( ( name = nameReader.readLine() ) != null ) {
             if( (score = scoreReader.readLine() ) != null) {
                 highScores.add(new HighScore(name, score));
             }
         }
 
-        // Sorting the high scores
         Collections.sort(highScores);
+    }
+
+    public void populateEightHighScoresList() throws IOException {
+        BufferedReader nameEightReader = new BufferedReader( new FileReader(this.getFilesDir() + "/scores/" + EIGHT_NAMES) );
+        BufferedReader scoreEightReader = new BufferedReader( new FileReader(this.getFilesDir() + "/scores/" + EIGHT_SCORES));
+        String         name, score;
+
+        while( ( name = nameEightReader.readLine() ) != null ) {
+            if( (score = scoreEightReader.readLine() ) != null) {
+                highScoresEight.add(new HighScore(name, score));
+            }
+        }
+
+        // Sorting the high scores
+        Collections.sort(highScoresEight);
     }
 }
