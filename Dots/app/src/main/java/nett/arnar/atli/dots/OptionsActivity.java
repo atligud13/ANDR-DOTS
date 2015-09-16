@@ -15,6 +15,10 @@ import java.io.IOException;
 import nett.arnar.atli.dots.R;
 
 public class OptionsActivity extends PreferenceActivity {
+    private final String SIX_NAMES = "names_file";
+    private final String SIX_SCORES = "scores_file";
+    private final String EIGHT_NAMES = "names_eight_file";
+    private final String EIGHT_SCORES = "scores_eight_file";
 
     Preference resetHighScorePref;
 
@@ -29,10 +33,14 @@ public class OptionsActivity extends PreferenceActivity {
 
     public boolean resetScoreList() {
         File dir = getFilesDir();
-        File names = new File(dir + "/scores/", "names_file");
-        File scores = new File(dir + "/scores/", "scores_file");
-        names.delete();
-        return scores.delete();
+        File namesSix = new File(dir + "/scores/", SIX_NAMES);
+        File scoresSix = new File(dir + "/scores/", SIX_SCORES);
+        File namesEight = new File(dir + "/scores/", EIGHT_NAMES);
+        File scoresEight = new File(dir + "/scores/", EIGHT_SCORES);
+        namesSix.delete();
+        scoresSix.delete();
+        namesEight.delete();
+        return scoresEight.delete();
     }
 
     public void setClickListeners() {
@@ -40,12 +48,9 @@ public class OptionsActivity extends PreferenceActivity {
         resetHighScorePref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                if(resetScoreList()) {
-                    Toast.makeText( getApplicationContext(), "High scores deleted", Toast.LENGTH_LONG).show();
-                    return true;
-                }
-                Toast.makeText( getApplicationContext(), "You've gotta make some high scores first brah", Toast.LENGTH_LONG).show();
-                return false;
+                resetScoreList();
+                Toast.makeText( getApplicationContext(), "High scores deleted", Toast.LENGTH_LONG).show();
+                return true;
             }
         });
     }

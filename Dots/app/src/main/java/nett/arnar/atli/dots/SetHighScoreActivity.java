@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 
 import java.io.BufferedReader;
@@ -20,9 +21,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class SetHighScoreActivity extends AppCompatActivity {
-
-    private final String NAMES = "names_file";
-    private final String SCORES = "scores_file";
+    private final String SIX_NAMES = "names_file";
+    private final String SIX_SCORES = "scores_file";
+    private final String EIGHT_NAMES = "names_eight_file";
+    private final String EIGHT_SCORES = "scores_eight_file";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,16 +58,27 @@ public class SetHighScoreActivity extends AppCompatActivity {
         // Getting the name and score from the user input
         EditText nameEditText = (EditText) findViewById(R.id.set_high_score_name);
         EditText scoreEditText = (EditText) findViewById(R.id.set_high_score_score);
+        CheckBox six = (CheckBox) findViewById(R.id.six);
         String name = nameEditText.getText().toString();
         String score = scoreEditText.getText().toString();
 
         // Saving the score to the internal storage
         try {
-            saveScore(name, score);
+            if(six.isChecked()) {
+                saveScore(name, score, "SIX");
+            }
+            else {
+                saveScore(name, score, "EIGHT");
+            }
         }
         catch(IOException e) {
             createInternalStorageFiles();
-            saveScore(name, score);
+            if(six.isChecked()) {
+                saveScore(name, score, "SIX");
+            }
+            else {
+                saveScore(name, score, "EIGHT");
+            }
         }
 
         Intent intent = new Intent(this, HighScoresActivity.class);
@@ -76,14 +89,25 @@ public class SetHighScoreActivity extends AppCompatActivity {
     public void createInternalStorageFiles() {
         File scores = new File(this.getFilesDir(), "scores");
         scores.mkdir();
-        File names_file = new File(this.getFilesDir() + "/scores/", NAMES);
-        File scores_file = new File(this.getFilesDir() + "/scores/", SCORES);
+        File names_file = new File(this.getFilesDir() + "/scores/", SIX_NAMES);
+        File scores_file = new File(this.getFilesDir() + "/scores/", SIX_SCORES);
+        File names_eight_file = new File(this.getFilesDir() + "/scores/", EIGHT_NAMES);
+        File scores_eight_file = new File(this.getFilesDir() + "/scores/", EIGHT_SCORES);
     }
 
     // Saves the score to the internal storage
-    public void saveScore(String name, String score) throws IOException{
-        FileOutputStream nFos = new FileOutputStream(this.getFilesDir() +  "/scores/names_file", true);
-        FileOutputStream sFos = new FileOutputStream(this.getFilesDir() +  "/scores/scores_file", true);
+    public void saveScore(String name, String score, String mode) throws IOException{
+        String names, scores;
+        if(mode.equals("SIX")) {
+            names = this.getFilesDir() + "/scores/" + SIX_NAMES;
+            scores = this.getFilesDir() + "/scores/" + SIX_SCORES;
+        }
+        else {
+            names = this.getFilesDir() + "/scores/" + EIGHT_NAMES;
+            scores = this.getFilesDir() + "/scores/" + EIGHT_SCORES;
+        }
+        FileOutputStream nFos = new FileOutputStream(names, true);
+        FileOutputStream sFos = new FileOutputStream(scores, true);
 
         nFos.write(name.getBytes());
         nFos.write(System.getProperty("line.separator").getBytes());

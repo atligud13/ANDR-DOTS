@@ -15,7 +15,8 @@
     <string name="title_activity_game">GameActivity</string>
 
     <string name="title_activity_high_scores">HighScores</string>
-    <string name="high_scores_title">High Scores</string>
+    <string name="high_scores_title_six">6x6 High Scores</string>
+    <string name="high_scores_title_eight">8x8 High Scores</string>
     <string name="title_activity_set_high_score">SetHighScoreActivity</string>
 
     <string name="set_high_score_message">Pick a username mate</string>
