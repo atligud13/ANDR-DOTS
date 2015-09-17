@@ -1,5 +1,6 @@
 package nett.arnar.atli.dots;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -9,6 +10,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -41,6 +43,9 @@ public class BoardView extends View {
     private int m_moves = 30;
     private Circle[][] circles;
     private GameListener listener;
+
+    private HashMap<Circle, Integer> animatingCircles = new HashMap<>();
+    private ArrayList<Circle> newCircles = new ArrayList<>();
 
     public BoardView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -193,31 +198,107 @@ public class BoardView extends View {
         int row = yToRow(y);
 
         // Make sure col and row is within range
-        if (col < numCells && row < numCells && col >= 0 && row >= 0) {
-            Circle c = circles[col][row];
+        if (col < numCells && row < numCells && col >= 0 && row >= 0)
+            return circles[col][row];
 
-            if (c.getCircle().contains(x, y)) return c;
-        }
         return null;
     }
 
     private void removeCircles() {
         Random rand = new Random();
-        int radius = getMeasuredWidth() / (numCells * 4);
-        HashMap<Circle, Integer> animate = new HashMap<>();
+        int distance[] = new int[numCells];
+
+        // Sorting the points by their y value so our gravity works correctly
+        Collections.sort(m_cellPath, new Comparator<Point>() {
+            @Override
+            public int compare(Point lhs, Point rhs) {
+                return Integer.compare(lhs.y, rhs.y);
+            }
+        });
 
         for (Point p : m_cellPath) {
             // Applying simple gravity
             for (int i = p.y; i > 0; --i) {
                 circles[p.x][i] = circles[p.x][i - 1];
-                animate.put(circles[p.x][i], i);
+                circles[p.x][i - 1] = null;
+                if (circles[p.x][i] != null) {
+                    // The circle and its destination y is stored
+                    animatingCircles.put(circles[p.x][i], rowToY(i));
+                }
             }
-            circles[p.x][0] = new Circle(this, COLOR_POOL[rand.nextInt(5)], radius, colToX(p.x), rowToY(0));
+            circles[p.x][0] = null;
         }
 
-        for (Map.Entry<Circle, Integer> e : animate.entrySet()) {
-            e.getKey().animateY(rowToY(e.getValue()));
+        // Creating new circles where needed
+        for (int i = 0; i < numCells; ++i) {
+            int x = colToX(i);
+            for (int j = 0; circles[i][j] == null && j < numCells; ++j) {
+                int y = rowToY(j);
+                circles[i][j] = new Circle(this, COLOR_POOL[rand.nextInt(5)], 0, x, y);
+                // Storing new circles so we can animate their radius
+                newCircles.add(circles[i][j]);
+                distance[i] += m_cellWidth;
+            }
         }
+
+        animateGravity(distance);
+    }
+
+    private ValueAnimator gravityAnimator = new ValueAnimator();
+
+    private void animateGravity(final int distances[]) {
+        gravityAnimator.removeAllUpdateListeners();
+        gravityAnimator.setDuration(200);
+        gravityAnimator.setFloatValues(0.0f, 1.0f);
+        gravityAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float value = (float)animation.getAnimatedValue();
+                for (Map.Entry<Circle, Integer> e : animatingCircles.entrySet()) {
+                    Circle c = e.getKey();
+
+                    // Calculating the circle's original y position
+                    int x = (int)c.getX();
+                    int yTo = e.getValue();
+                    int yFrom = yTo - distances[xToCol(x)];
+
+                    int y = (int)((1.0-value) * yFrom + value * yTo);
+                    c.moveTo(x, y);
+                }
+                invalidate();
+
+                if (value == 1.0f) {
+                    animatingCircles.clear();
+                    animateRadius();
+                }
+            }
+        });
+        gravityAnimator.start();
+    }
+
+    private ValueAnimator radiusAnimator = new ValueAnimator();
+
+    private void animateRadius() {
+        // Find a good radius for each circle
+        final float radius = getMeasuredWidth() / (numCells * 4);
+        radiusAnimator.removeAllUpdateListeners();
+        radiusAnimator.setDuration(200);
+        radiusAnimator.setFloatValues(0.0f, radius);
+        radiusAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float value = (float)animation.getAnimatedValue();
+                for (Circle c : newCircles) {
+                    c.setRadius((int)value);
+                }
+                invalidate();
+
+                if (value == radius) {
+                    newCircles.clear();
+                }
+            }
+        });
+        radiusAnimator.start();
     }
 
     private static int[] COLOR_POOL = new int[] {
