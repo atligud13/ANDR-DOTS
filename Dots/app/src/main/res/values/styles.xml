@@ -1,8 +1,7 @@
 <resources>
-
+    <color name="custom_theme_color">#b0b0ff</color>
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here. -->
     </style>
 
 </resources>
