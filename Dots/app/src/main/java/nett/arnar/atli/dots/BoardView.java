@@ -22,7 +22,7 @@ import nett.arnar.atli.dots.Shapes.Circle;
  * Created by Atli Guðlaugsson on 9/9/2015.
  */
 public class BoardView extends View {
-    private int m_circleGap;
+    private int m_cellWidth;
     private int numCells;
     private Path m_path = new Path();
     private Paint m_paintCell = new Paint();
@@ -84,7 +84,7 @@ public class BoardView extends View {
     @Override
     protected void onSizeChanged( int xNew, int yNew, int xOld, int yOld ) {
         int boardWidth = (xNew - getPaddingLeft() - getPaddingRight());
-        m_circleGap = boardWidth / (numCells - 1);
+        m_cellWidth = boardWidth / numCells;
     }
 
     @Override
@@ -165,29 +165,22 @@ public class BoardView extends View {
                   lastP.y - 1 == point.y && lastP.x == point.x || // Above
                   lastP.y + 1 == point.y && lastP.x == point.x))  // Below
                 return;
-
-            for (Point p : m_cellPath) {
-                if (p.x == point.x && p.y == point.y) {
-                    // Point is already in the path
-                    return;
-                }
-            }
         }
 
         m_cellPath.add(point);
     }
 
     private int xToCol(int x) {
-        return (x - getPaddingLeft()) / m_circleGap;
+        return (x - getPaddingLeft()) / m_cellWidth;
     }
     private int yToRow(int y) {
-        return (y - getPaddingTop()) / m_circleGap;
+        return (y - getPaddingTop()) / m_cellWidth;
     }
     private int colToX(int col) {
-        return getPaddingLeft() + (col * m_circleGap);
+        return (getPaddingLeft() + (col * m_cellWidth)) + (m_cellWidth / 2);
     }
     private int rowToY(int row) {
-        return getPaddingTop() + (row * m_circleGap);
+        return (getPaddingTop() + (row * m_cellWidth)) + (m_cellWidth / 2);
     }
 
     private Circle getOverlappingCircle(int x, int y) {
