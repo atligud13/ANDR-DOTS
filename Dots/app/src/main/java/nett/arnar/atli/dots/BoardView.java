@@ -16,8 +16,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 import nett.arnar.atli.dots.Shapes.Circle;
 
@@ -94,10 +98,8 @@ public class BoardView extends View {
     public void onDraw(Canvas canvas) {
 
         for (int i = 0; i < numCells; ++i) {
-            int x = colToX(i);
             for (int j = 0; j < numCells; ++j) {
-                int y = rowToY(j);
-                circles[i][j].draw(canvas, m_paintCircle, x, y);
+                circles[i][j].draw(canvas, m_paintCircle);
             }
         }
 
@@ -202,13 +204,19 @@ public class BoardView extends View {
     private void removeCircles() {
         Random rand = new Random();
         int radius = getMeasuredWidth() / (numCells * 4);
+        HashMap<Circle, Integer> animate = new HashMap<>();
 
         for (Point p : m_cellPath) {
             // Applying simple gravity
             for (int i = p.y; i > 0; --i) {
                 circles[p.x][i] = circles[p.x][i - 1];
+                animate.put(circles[p.x][i], i);
             }
-            circles[p.x][0] = new Circle(COLOR_POOL[rand.nextInt(5)], radius);
+            circles[p.x][0] = new Circle(this, COLOR_POOL[rand.nextInt(5)], radius, colToX(p.x), rowToY(0));
+        }
+
+        for (Map.Entry<Circle, Integer> e : animate.entrySet()) {
+            e.getKey().animateY(rowToY(e.getValue()));
         }
     }
 
@@ -227,8 +235,10 @@ public class BoardView extends View {
         // Find a good radius for each circle
         int radius = getMeasuredWidth() / (numCells * 4);
         for (int i = 0; i < numCells; ++i) {
+            int x = colToX(i);
             for (int j = 0; j < numCells; ++j) {
-                circles[i][j] = new Circle(COLOR_POOL[rand.nextInt(5)], radius);
+                int y = rowToY(j);
+                circles[i][j] = new Circle(this, COLOR_POOL[rand.nextInt(5)], radius, x, y);
             }
         }
     }
