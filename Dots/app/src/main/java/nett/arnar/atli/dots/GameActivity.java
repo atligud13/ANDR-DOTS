@@ -21,7 +21,9 @@ import nett.arnar.atli.dots.Shapes.Circle;
 import nett.arnar.atli.dots.BoardView.GameListener;
 
 public class GameActivity extends AppCompatActivity {
-    public static String SCORE = "nett.arnar.atli.dots.GameActivity";
+    public static String SCORE = "nett.arnar.atli.dots.GameActivity.SCORE";
+    public static String GAME_MODE = "nett.arnar.atli.dots.GameActivity.GAME_MODE";
+    private int numCells;
     private BoardView boardView;
     private TextView tv_score;
     private TextView tv_moves;
@@ -35,6 +37,7 @@ public class GameActivity extends AppCompatActivity {
             Intent intent = new Intent(GameActivity.this, SetHighScoreActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             intent.putExtra(SCORE, score);
+            intent.putExtra(GAME_MODE, numCells);
             startActivity(intent);
         }
 
@@ -58,7 +61,7 @@ public class GameActivity extends AppCompatActivity {
 
         //Get the message from intent
         Intent intent = getIntent();
-        int numCells = intent.getIntExtra(BoardSelector.GAME_MODE, 6);
+        numCells = intent.getIntExtra(BoardSelector.GAME_MODE, 6);
 
         boardView = (BoardView) findViewById(R.id.v_bv);
         boardView.setNumCells(numCells);

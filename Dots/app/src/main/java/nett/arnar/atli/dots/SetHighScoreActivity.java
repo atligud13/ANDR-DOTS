@@ -27,6 +27,7 @@ public class SetHighScoreActivity extends AppCompatActivity {
     private final String EIGHT_NAMES = "names_eight_file";
     private final String EIGHT_SCORES = "scores_eight_file";
     private String score;
+    private int gameMode;
     private TextView user_score;
 
     @Override
@@ -38,6 +39,7 @@ public class SetHighScoreActivity extends AppCompatActivity {
 
         //Get the score and game mode from Intent
         Intent intent = getIntent();
+        gameMode = intent.getIntExtra(GameActivity.GAME_MODE, 6);
         user_score.setText(Integer.toString(intent.getIntExtra(GameActivity.SCORE, 0)));
     }
 
@@ -66,14 +68,13 @@ public class SetHighScoreActivity extends AppCompatActivity {
     public void onSubmitClick(View view) throws IOException{
         // Getting the name from the user input
         EditText nameEditText = (EditText) findViewById(R.id.set_high_score_name);
-        CheckBox six = (CheckBox) findViewById(R.id.six);
         String name = nameEditText.getText().toString();
 
         score = user_score.getText().toString();
 
         // Saving the score to the internal storage
         try {
-            if(six.isChecked()) {
+            if(gameMode == 6) {
                 saveScore(name, score, "SIX");
             }
             else {
@@ -82,7 +83,7 @@ public class SetHighScoreActivity extends AppCompatActivity {
         }
         catch(IOException e) {
             createInternalStorageFiles();
-            if(six.isChecked()) {
+            if(gameMode == 6) {
                 saveScore(name, score, "SIX");
             }
             else {

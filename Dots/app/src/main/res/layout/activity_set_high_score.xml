@@ -39,20 +39,6 @@
         android:layout_marginTop="20dp"
         android:inputType="textCapCharacters" />
 
-    <CheckBox
-        android:id="@+id/six"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="666"
-        android:checked="true" />
-
-    <CheckBox
-        android:id="@+id/eight"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="888"/>
-
     <Button
         android:id="@+id/btnSubmitSix"
         android:onClick="onSubmitClick"
