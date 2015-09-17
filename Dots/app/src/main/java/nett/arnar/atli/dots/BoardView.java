@@ -13,6 +13,9 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 
@@ -31,7 +34,7 @@ public class BoardView extends View {
     private List<Point> m_cellPath = new ArrayList<Point>();
     private Point m_currentPoint;
     private int m_score = 0;
-    private int m_moves = 5;
+    private int m_moves = 30;
     private Circle[][] circles;
     private GameListener listener;
 
@@ -199,8 +202,13 @@ public class BoardView extends View {
     private void removeCircles() {
         Random rand = new Random();
         int radius = getMeasuredWidth() / (numCells * 4);
+
         for (Point p : m_cellPath) {
-            circles[p.x][p.y] = new Circle(COLOR_POOL[rand.nextInt(5)], radius);
+            // Applying simple gravity
+            for (int i = p.y; i > 0; --i) {
+                circles[p.x][i] = circles[p.x][i - 1];
+            }
+            circles[p.x][0] = new Circle(COLOR_POOL[rand.nextInt(5)], radius);
         }
     }
 
