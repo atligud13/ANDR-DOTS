@@ -40,12 +40,4 @@
         android:text="@string/main_screen_high_scores"
         android:layout_marginTop="30dp" />
 
-    <Button
-        android:id="@+id/btnSetHighScore"
-        android:onClick="onSetHighScoreClick"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Set high score"
-        android:layout_marginTop="30dp" />
-
 </LinearLayout>

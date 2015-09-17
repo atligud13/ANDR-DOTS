@@ -21,7 +21,7 @@ import nett.arnar.atli.dots.Shapes.Circle;
 import nett.arnar.atli.dots.BoardView.GameListener;
 
 public class GameActivity extends AppCompatActivity {
-    public String SCORE = "nett.arnar.atli.dots.GameActivity";
+    public static String SCORE = "nett.arnar.atli.dots.GameActivity";
     private BoardView boardView;
     private TextView tv_score;
     private TextView tv_moves;

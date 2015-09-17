@@ -8,12 +8,28 @@
     android:layout_centerHorizontal="true" >
 
     <TextView
-    android:text="@string/set_high_score_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:id="@+id/set_high_score_score"
+        android:layout_marginTop="40dp"
+        android:textSize="40sp"/>
+
+    <TextView
+        android:text="@string/set_high_score_title"
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:textSize="30sp" />
+
+    <TextView
+    android:text="@string/set_high_score_username"
     android:layout_width="match_parent"
     android:gravity="center"
     android:layout_height="wrap_content"
     android:layout_marginTop="60dp"
-    android:textSize="30sp" />
+    android:textSize="20sp" />
 
     <EditText
         android:id="@+id/set_high_score_name"
@@ -23,26 +39,11 @@
         android:layout_marginTop="20dp"
         android:inputType="textCapCharacters" />
 
-    <TextView
-        android:text="Set your highscore"
-        android:layout_width="match_parent"
-        android:gravity="center"
-        android:layout_height="wrap_content"
-        android:paddingTop="30dp"
-        android:textSize="30sp" />
-
-    <EditText
-        android:id="@+id/set_high_score_score"
-        android:layout_width="match_parent"
-        android:gravity="center"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:inputType="numberDecimal" />
-
     <CheckBox
         android:id="@+id/six"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:text="666"
         android:checked="true" />
 

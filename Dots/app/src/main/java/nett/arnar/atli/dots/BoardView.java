@@ -31,7 +31,7 @@ public class BoardView extends View {
     private List<Point> m_cellPath = new ArrayList<Point>();
     private Point m_currentPoint;
     private int m_score = 0;
-    private int m_moves = 30;
+    private int m_moves = 5;
     private Circle[][] circles;
     private GameListener listener;
 

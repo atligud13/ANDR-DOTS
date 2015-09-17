@@ -19,7 +19,9 @@
     <string name="high_scores_title_eight">8x8 High Scores</string>
     <string name="title_activity_set_high_score">SetHighScoreActivity</string>
 
-    <string name="set_high_score_message">Pick a username mate</string>
+    <string name="set_high_score_title">Nice job buddy!</string>
+    <string name="set_high_score_score_msg">Your score: </string>
+    <string name="set_high_score_username">Pick a username mate</string>
 
     <string name="title_activity_options">OptionsActivity</string>
 

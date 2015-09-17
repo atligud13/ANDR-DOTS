@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -25,11 +26,19 @@ public class SetHighScoreActivity extends AppCompatActivity {
     private final String SIX_SCORES = "scores_file";
     private final String EIGHT_NAMES = "names_eight_file";
     private final String EIGHT_SCORES = "scores_eight_file";
+    private String score;
+    private TextView user_score;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_high_score);
+
+        user_score = (TextView) findViewById(R.id.set_high_score_score);
+
+        //Get the score and game mode from Intent
+        Intent intent = getIntent();
+        user_score.setText(Integer.toString(intent.getIntExtra(GameActivity.SCORE, 0)));
     }
 
     @Override
@@ -55,12 +64,12 @@ public class SetHighScoreActivity extends AppCompatActivity {
     }
 
     public void onSubmitClick(View view) throws IOException{
-        // Getting the name and score from the user input
+        // Getting the name from the user input
         EditText nameEditText = (EditText) findViewById(R.id.set_high_score_name);
-        EditText scoreEditText = (EditText) findViewById(R.id.set_high_score_score);
         CheckBox six = (CheckBox) findViewById(R.id.six);
         String name = nameEditText.getText().toString();
-        String score = scoreEditText.getText().toString();
+
+        score = user_score.getText().toString();
 
         // Saving the score to the internal storage
         try {
