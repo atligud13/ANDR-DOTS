@@ -234,7 +234,7 @@ public class BoardView extends View {
             int x = colToX(i);
             for (int j = 0; circles[i][j] == null && j < numCells; ++j) {
                 int y = rowToY(j);
-                circles[i][j] = new Circle(this, COLOR_POOL[rand.nextInt(5)], 0, x, y);
+                circles[i][j] = new Circle(COLOR_POOL[rand.nextInt(5)], 0, x, y);
                 // Storing new circles so we can animate their radius
                 newCircles.add(circles[i][j]);
                 distance[i] += m_cellWidth;
@@ -319,7 +319,7 @@ public class BoardView extends View {
             int x = colToX(i);
             for (int j = 0; j < numCells; ++j) {
                 int y = rowToY(j);
-                circles[i][j] = new Circle(this, COLOR_POOL[rand.nextInt(5)], radius, x, y);
+                circles[i][j] = new Circle(COLOR_POOL[rand.nextInt(5)], radius, x, y);
             }
         }
     }

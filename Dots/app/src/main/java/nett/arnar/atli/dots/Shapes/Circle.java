@@ -17,7 +17,7 @@ public class Circle {
     private int color;
     private int radius;
 
-    public Circle(BoardView view, int color, int radius, int x, int y) {
+    public Circle(int color, int radius, int x, int y) {
         this.circle = new RectF();
         this.circle.set(x - radius, y - radius, x + radius, y + radius);
         this.color = color;
