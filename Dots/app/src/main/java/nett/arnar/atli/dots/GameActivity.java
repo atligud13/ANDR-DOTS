@@ -1,9 +1,13 @@
 package nett.arnar.atli.dots;
 
 import android.app.ActionBar;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.AssetFileDescriptor;
 import android.graphics.Color;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.io.IOException;
 import java.util.Random;
 
 import nett.arnar.atli.dots.Shapes.Circle;
@@ -28,8 +33,10 @@ public class GameActivity extends AppCompatActivity {
     private TextView tv_score;
     private TextView tv_moves;
     private Vibrator m_vibrator;
+    MediaPlayer m_player;
     private SharedPreferences m_sp;
     private boolean m_useVibrator;
+    private boolean m_useSound;
 
     private GameListener gameListener = new GameListener() {
         @Override
@@ -48,6 +55,9 @@ public class GameActivity extends AppCompatActivity {
             if (m_useVibrator) {
                 m_vibrator.vibrate(500);
             }
+            if(m_useSound) {
+                playSound();
+            }
         }
     };
 
@@ -63,6 +73,8 @@ public class GameActivity extends AppCompatActivity {
         Intent intent = getIntent();
         numCells = intent.getIntExtra(BoardSelector.GAME_MODE, 6);
 
+        m_player = new MediaPlayer();
+
         boardView = (BoardView) findViewById(R.id.v_bv);
         boardView.setNumCells(numCells);
         boardView.setGameListener(gameListener);
@@ -70,5 +82,22 @@ public class GameActivity extends AppCompatActivity {
         m_vibrator = (Vibrator) getApplicationContext().getSystemService(VIBRATOR_SERVICE);
         m_sp = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         m_useVibrator = m_sp.getBoolean("vibrate", false);
+        m_useSound = m_sp.getBoolean("sound", false);
+    }
+
+    public void playSound() {
+        if(m_player.isPlaying()) {
+            m_player.stop();
+        }
+
+        try {
+            AssetFileDescriptor afd = getAssets().openFd("pop.mp3");
+            m_player = new MediaPlayer();
+            m_player.setDataSource(afd.getFileDescriptor());
+            m_player.prepare();
+            m_player.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
