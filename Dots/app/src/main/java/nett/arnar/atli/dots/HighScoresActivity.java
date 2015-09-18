@@ -14,6 +14,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 
 public class HighScoresActivity extends AppCompatActivity {
     ArrayList<HighScore> highScores = new ArrayList<>();
@@ -26,6 +27,13 @@ public class HighScoresActivity extends AppCompatActivity {
     private final String SIX_SCORES = "scores_file";
     private final String EIGHT_NAMES = "names_eight_file";
     private final String EIGHT_SCORES = "scores_eight_file";
+
+    private Comparator comp = new Comparator<HighScore>() {
+        @Override
+        public int compare(HighScore lhs, HighScore rhs) {
+            return Integer.compare(Integer.parseInt(rhs.score), Integer.parseInt(lhs.score));
+        }
+    };
 
 
     @Override
@@ -104,7 +112,8 @@ public class HighScoresActivity extends AppCompatActivity {
             }
         }
 
-        Collections.sort(highScores);
+        // Sorting the high scores
+        Collections.sort(highScores, comp);
     }
 
     public void populateEightHighScoresList() throws IOException {
@@ -119,6 +128,6 @@ public class HighScoresActivity extends AppCompatActivity {
         }
 
         // Sorting the high scores
-        Collections.sort(highScoresEight);
+        Collections.sort(highScoresEight, comp);
     }
 }
