@@ -170,6 +170,13 @@ public class BoardView extends View {
                   lastP.y - 1 == point.y && lastP.x == point.x || // Above
                   lastP.y + 1 == point.y && lastP.x == point.x))  // Below
                 return;
+
+            for (Point p : m_cellPath) {
+                if (p.x == point.x && p.y == point.y) {
+                        // Point is already in the path
+                        return;
+                }
+            }
         }
 
         m_cellPath.add(point);
