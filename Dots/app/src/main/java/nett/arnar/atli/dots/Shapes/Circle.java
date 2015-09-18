@@ -16,39 +16,12 @@ public class Circle {
     private RectF circle;
     private int color;
     private int radius;
-    private BoardView view;
-    private ValueAnimator locationAnimator = new ValueAnimator();
-    private ValueAnimator radiusAnimator = new ValueAnimator();
 
-    private AnimatorUpdateListener locationListener = new AnimatorUpdateListener() {
-        @Override
-        public void onAnimationUpdate(ValueAnimator animation) {
-            int newY = (int) animation.getAnimatedValue();
-            moveTo((int) getX(), newY);
-            view.invalidate();
-        }
-    };
-
-    private AnimatorUpdateListener radiusListener = new AnimatorUpdateListener() {
-        @Override
-        public void onAnimationUpdate(ValueAnimator animation) {
-            int newRadius = (int) animation.getAnimatedValue();
-            setRadius(newRadius);
-            view.invalidate();
-        }
-    };
-
-    public Circle(BoardView view, int color, int radius, int x, int y) {
+    public Circle(int color, int radius, int x, int y) {
         this.circle = new RectF();
         this.circle.set(x - radius, y - radius, x + radius, y + radius);
         this.color = color;
         this.radius = radius;
-        this.view = view;
-
-        this.radiusAnimator.setDuration(200);
-        this.radiusAnimator.setIntValues(1, radius);
-        this.radiusAnimator.addUpdateListener(radiusListener);
-        this.radiusAnimator.start();
     }
 
     public void draw(Canvas canvas, Paint paint) {
@@ -58,14 +31,6 @@ public class Circle {
 
     public void moveTo(int x, int y) {
         this.circle.set(x - radius, y - radius, x + radius, y + radius);
-    }
-
-    public void animateY(int yTo) {
-        locationAnimator.removeAllUpdateListeners();
-        locationAnimator.setDuration(200);
-        locationAnimator.setIntValues((int)getY(), yTo);
-        locationAnimator.addUpdateListener(locationListener);
-        locationAnimator.start();
     }
 
     public RectF getCircle() {
@@ -84,7 +49,7 @@ public class Circle {
         return color;
     }
 
-    private void setRadius(int rad) {
+    public void setRadius(int rad) {
         int x = (int)getX();
         int y = (int)getY();
         this.radius = rad;
