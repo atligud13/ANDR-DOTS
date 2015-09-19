@@ -1,5 +1,7 @@
 package nett.arnar.atli.dots;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -24,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.TreeSet;
 
 import nett.arnar.atli.dots.Shapes.Circle;
 
@@ -44,7 +47,7 @@ public class BoardView extends View {
     private Circle[][] circles;
     private GameListener listener;
 
-    private HashMap<Circle, Integer> animatingCircles = new HashMap<>();
+    private ArrayList<Pair<Point, Point>> fallingCircles = new ArrayList<>();
     private ArrayList<Circle> newCircles = new ArrayList<>();
 
     public BoardView(Context context, AttributeSet attrs) {
@@ -149,9 +152,8 @@ public class BoardView extends View {
         }
         else if (event.getAction() == MotionEvent.ACTION_UP) {
             if (m_cellPath.size() > 1) {
-                removeCircles();
+                m_score += removeCircles();
                 m_moves--;
-                m_score += m_cellPath.size();
                 listener.onMove(m_score, m_moves);
                 if (m_moves < 1) listener.onGameOver(m_score);
             }
@@ -164,10 +166,11 @@ public class BoardView extends View {
 
     private void addToPath(Circle c) {
         Point point = new Point(xToCol((int)c.getX()), yToRow((int)c.getY()));
+        int size = m_cellPath.size();
 
         // Check if it's the first point
         if (!m_cellPath.isEmpty()) {
-            Point lastP = m_cellPath.get(m_cellPath.size() - 1);
+            Point lastP = m_cellPath.get(size - 1);
 
             // Check if point is adjacent
             if (!(lastP.x - 1 == point.x && lastP.y == point.y || // Left of
@@ -176,10 +179,17 @@ public class BoardView extends View {
                   lastP.y + 1 == point.y && lastP.x == point.x))  // Below
                 return;
 
-            for (Point p : m_cellPath) {
-                if (p.x == point.x && p.y == point.y) {
-                        // Point is already in the path
-                        return;
+            if (size > 1) {
+                // 2nd last point
+                Point secLastP = m_cellPath.get(size - 2);
+
+                if (lastP.x == point.x && lastP.y == point.y) {
+                    // Same as last dot, we do nothing
+                    return;
+                } else if (secLastP.x == point.x && secLastP.y == point.y) {
+                    // User is going back, we remove the last point
+                    m_cellPath.remove(size - 1);
+                    return;
                 }
             }
         }
@@ -211,73 +221,119 @@ public class BoardView extends View {
         return null;
     }
 
-    private void removeCircles() {
+    private int removeCircles() {
         Random rand = new Random();
-        int distance[] = new int[numCells];
+        int num;
 
-        // Sorting the points by their y value so our gravity works correctly
-        Collections.sort(m_cellPath, new Comparator<Point>() {
+        if (hasLoop()) num = removeAllByColor(m_paintPath.getColor());
+        else           num = removeByPath();
+
+        applyGravity();
+
+        // Creating new circles where needed
+        for (int i = 0; i < numCells; ++i) {
+            int x = colToX(i);
+            for (int j = 0; j < numCells && circles[i][j] == null; ++j) {
+                int y = rowToY(j);
+                circles[i][j] = new Circle(COLOR_POOL[rand.nextInt(5)], 0, x, y);
+                // Storing new circles so we can animate their radius
+                newCircles.add(circles[i][j]);
+            }
+        }
+
+        animateGravity();
+
+        return num;
+    }
+
+    private int removeAllByColor(int color) {
+        int num = 0;
+        for (int i = 0; i < numCells; ++i) {
+            for (int j = 0; j < numCells; ++j) {
+                if (circles[i][j].getColor() == color) {
+                    circles[i][j] = null;
+                    ++num;
+                }
+            }
+        }
+
+        return num;
+    }
+
+    private int removeByPath() {
+        int num = 0;
+        for (Point p : m_cellPath) {
+            circles[p.x][p.y] = null;
+            ++num;
+        }
+
+        return num;
+    }
+
+    private boolean hasLoop() {
+        Set<Point> set = new TreeSet<>(new Comparator<Point>() {
             @Override
             public int compare(Point lhs, Point rhs) {
+                int x = Integer.compare(lhs.x, rhs.x);
+                if (x != 0) return x;
                 return Integer.compare(lhs.y, rhs.y);
             }
         });
 
         for (Point p : m_cellPath) {
-            // Applying simple gravity
-            for (int i = p.y; i > 0; --i) {
-                circles[p.x][i] = circles[p.x][i - 1];
-                circles[p.x][i - 1] = null;
-                if (circles[p.x][i] != null) {
-                    // The circle and its destination y is stored
-                    animatingCircles.put(circles[p.x][i], rowToY(i));
+            if (!set.add(p)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private void applyGravity() {
+        for (int i = 0; i < numCells; ++i) {
+            for (int j = numCells - 1; j >= 0; --j) {
+                if (circles[i][j] == null) {
+                    // We found a removed circle
+                    // So we look for a circle above it
+                    for (int k = j - 1; k >= 0; --k) {
+                        if (circles[i][k] != null) {
+                            circles[i][j] = circles[i][k];
+                            circles[i][k] = null;
+                            Point from = new Point(i, k);
+                            Point to = new Point(i, j);
+                            fallingCircles.add(new Pair<>(from, to));
+                            break;
+                        }
+                    }
                 }
             }
-            circles[p.x][0] = null;
         }
-
-        // Creating new circles where needed
-        for (int i = 0; i < numCells; ++i) {
-            int x = colToX(i);
-            for (int j = 0; circles[i][j] == null && j < numCells; ++j) {
-                int y = rowToY(j);
-                circles[i][j] = new Circle(COLOR_POOL[rand.nextInt(5)], 0, x, y);
-                // Storing new circles so we can animate their radius
-                newCircles.add(circles[i][j]);
-                distance[i] += m_cellWidth;
-            }
-        }
-
-        animateGravity(distance);
     }
 
     private ValueAnimator gravityAnimator = new ValueAnimator();
 
-    private void animateGravity(final int distances[]) {
+    private void animateGravity() {
         gravityAnimator.removeAllUpdateListeners();
         gravityAnimator.setDuration(200);
         gravityAnimator.setFloatValues(0.0f, 1.0f);
         gravityAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                float value = (float)animation.getAnimatedValue();
-                for (Map.Entry<Circle, Integer> e : animatingCircles.entrySet()) {
-                    Circle c = e.getKey();
+                float value = (float) animation.getAnimatedValue();
+                for (Pair<Point, Point> p : fallingCircles) {
+                    Circle c = circles[p.second.x][p.second.y];
 
-                    // Calculating the circle's original y position
-                    int x = (int)c.getX();
-                    int yTo = e.getValue();
-                    int yFrom = yTo - distances[xToCol(x)];
-
-                    int y = (int)((1.0-value) * yFrom + value * yTo);
-                    c.moveTo(x, y);
+                    int y = (int) ((1.0 - value) * rowToY(p.first.y) + value * rowToY(p.second.y));
+                    c.moveTo((int)c.getX(), y);
                 }
                 invalidate();
-
-                if (value == 1.0f) {
-                    animatingCircles.clear();
-                    animateRadius();
-                }
+            }
+        });
+        gravityAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                fallingCircles.clear();
+                animateRadius();
             }
         });
         gravityAnimator.start();
@@ -294,15 +350,17 @@ public class BoardView extends View {
         radiusAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                float value = (float)animation.getAnimatedValue();
+                float value = (float) animation.getAnimatedValue();
                 for (Circle c : newCircles) {
-                    c.setRadius((int)value);
+                    c.setRadius((int) value);
                 }
                 invalidate();
-
-                if (value == radius) {
-                    newCircles.clear();
-                }
+            }
+        });
+        radiusAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                newCircles.clear();
             }
         });
         radiusAnimator.start();
