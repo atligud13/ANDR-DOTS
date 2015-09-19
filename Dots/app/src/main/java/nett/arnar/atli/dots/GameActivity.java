@@ -53,7 +53,7 @@ public class GameActivity extends AppCompatActivity {
             tv_score.setText(String.valueOf(score));
             tv_moves.setText(String.valueOf(moves));
             if (m_useVibrator) {
-                m_vibrator.vibrate(500);
+                m_vibrator.vibrate(200);
             }
             if(m_useSound) {
                 playSound();
