@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple">#B37ADE</color>
-    <color name="darkpurple">#8F63B0</color>
+    <color name="purple">#a36acd</color>
+    <color name="darkpurple">#664281</color>
+    <color name="green">#96cd6c</color>
+    <color name="darkgreen">#548141</color>
+    <color name="blue">#6ec6cd</color>
+    <color name="darkblue">#3f787f</color>
+    <color name="red">#cd7069</color>
+    <color name="darkred">#824b47</color>
     <color name="white">#FFFFFF</color>
 </resources>
